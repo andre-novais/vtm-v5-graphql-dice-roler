@@ -8,12 +8,13 @@ npm start
 
 POST localhost:4000/graphql
 {
-rollDice(dice: 8) {
-successes
-dice {
-number
-success
-isBloodDie
-}
-}
+  rollDice(dice: 8) {
+    successes
+      dice {
+        number
+        success
+        isBloodDie
+      }
+    }
+  }
 }
