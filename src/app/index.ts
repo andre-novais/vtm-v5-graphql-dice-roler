@@ -2,7 +2,9 @@ import cors from "cors";
 import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
-import DiceRoller from "../diceRoller";
+import mongoose from "mongoose";
+import DiceRoller from "../models/diceRoller";
+import config from "./config";
 
 var schema = buildSchema(`
   type Die {
@@ -25,8 +27,24 @@ var root = {
   },
 };
 
+const mongoDB = config["mongoDB"];
+mongoose.connect(mongoDB);
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: any;
+    }
+  }
+}
+
 var app = express();
+
 app.use(cors());
+
 app.use(
   "/graphql",
   graphqlHTTP({

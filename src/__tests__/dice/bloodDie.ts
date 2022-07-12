@@ -1,4 +1,4 @@
-import BloodDie from "../../dice/bloodDie";
+import BloodDie from "../../models/dice/bloodDie";
 
 describe("BloodDie", () => {
   it("Should have 10 sides by default", () => {
@@ -92,8 +92,6 @@ describe("BloodDie", () => {
 
     const sides = die.inspect();
     const critFailSide = sides.filter((side) => side.number === 1)[0];
-
-    console.log(critFailSide);
 
     expect(critFailSide.possibleBestialFailure).toStrictEqual(true);
   });
