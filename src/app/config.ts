@@ -4,4 +4,5 @@ dotenv.config();
 export default {
   mongoDB: `mongodb+srv://Cluster${process.env.MONGO_CLUSTER}:${process.env.MONGO_PSWD}@cluster${process.env.MONGO_CLUSTER}.scighkw.mongodb.net/?retryWrites=true&w=majority`,
   APP_SECRET: process.env.APP_SECRET || "secret",
+  jwtExpiration: Math.floor(Date.now() / 1000) + 60 * 60,
 };

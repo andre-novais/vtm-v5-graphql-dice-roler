@@ -1,21 +1,19 @@
-import { request } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../app/config";
 
-const getUserIdService = (req: typeof request) => {
-  const authorization = req.headers.authorization;
-
-  if (!authorization) {
-    throw new Error("Authorization header not found!");
+const getUserIdService = (token: string | null): string | null => {
+  if (!token) {
+    return null;
   }
 
-  const { userId } = jwt.verify(
-    authorization,
-    config["APP_SECRET"]
-  ) as JwtPayload;
+  let userId = null;
+
+  try {
+    ({ userId } = jwt.verify(token, config["APP_SECRET"]) as JwtPayload);
+  } catch {}
 
   if (!userId) {
-    throw new Error("Malformed token, reset the cookies");
+    return null;
   }
 
   return userId;

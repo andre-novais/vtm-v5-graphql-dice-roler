@@ -3,8 +3,11 @@ import express from "express";
 import { graphqlHTTP } from "express-graphql";
 import { buildSchema } from "graphql";
 import mongoose from "mongoose";
-import DiceRoller from "../models/diceRoller";
 import config from "./config";
+import getUser from "./middleswares/getUser";
+import login from "./resolvers/login";
+import rollDice from "./resolvers/rollDice";
+import signUp from "./resolvers/signUp";
 
 var schema = buildSchema(`
   type Die {
@@ -12,19 +15,35 @@ var schema = buildSchema(`
     success: Boolean
     isBloodDie: Boolean
   }
+  
   type RollResults {
     successes: Int!
     dice: [Die]
   }
+
   type Query {
     rollDice(dice: Int!, hunger: Int): RollResults
   }
+
+  type User {
+    name: String!
+  }
+
+  type loginResult {
+    token: String
+    user: User
+  }
+
+  type Mutation {
+    signUp(name: String!, password: String!): loginResult
+    login(name: String!, password: String!): loginResult
+  }
 `);
 
-var root = {
-  rollDice: ({ dice, hunger }: { dice: number; hunger: number }) => {
-    return new DiceRoller().roll({ dice, hunger });
-  },
+const root = {
+  rollDice,
+  signUp,
+  login,
 };
 
 const mongoDB = config["mongoDB"];
@@ -44,6 +63,19 @@ declare global {
 var app = express();
 
 app.use(cors());
+
+app.use(getUser);
+
+//app.use("/dice", loginRequired);
+
+app.use(
+  "/dice/graphql",
+  graphqlHTTP({
+    schema: schema,
+    rootValue: root,
+    graphiql: true,
+  })
+);
 
 app.use(
   "/graphql",
