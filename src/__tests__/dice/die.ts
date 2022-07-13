@@ -1,4 +1,4 @@
-import Die from "../../dice/die";
+import Die from "../../models/dice/die";
 
 describe("Die", () => {
   it("Should have 10 sides by default", () => {

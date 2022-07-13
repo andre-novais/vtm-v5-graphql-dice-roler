@@ -1,4 +1,4 @@
-import Check from "../../check";
+import Check from "../../models/check";
 
 describe("Check", () => {
   it("Should receive a number of dots and a difficulty and roll the check", () => {
